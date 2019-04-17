@@ -20,6 +20,33 @@ def wam_change(before,after):
                     results.append((skip,num_subs,i))
     return results
 
+def plot_surf_res(wams):
+
+    x,y,z = zip(*wams)
+    grid_x, grid_y = np.mgrid[min(x):max(x):100j,min(y):max(y):100j]
+    grid_z = griddata((x,y),z,(grid_x,grid_y),method='cubic')
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.plot_surface(grid_x,grid_y,grid_z,cmap=plt.cm.Spectral)
+    ax.set_title("BEFORE: {} | AFTER: {}".format(args.before,args.after))
+    ax.set_xlabel("NUM SUBS CHANGED / WEIGHTING")
+    ax.set_ylabel("NUM SUBS COMPLETED")
+    ax.set_zlabel("SCORE")
+    plt.show()
+
+def plot_scatter_res(wams):
+
+    x,y,z = zip(*wams)
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.scatter(x,y,z,cmap=plt.cm.Spectral)
+    ax.set_title("BEFORE: {} | AFTER: {}".format(args.before,args.after))
+    ax.set_xlabel("NUM SUBS CHANGED / WEIGHTING")
+    ax.set_ylabel("NUM SUBS COMPLETED")
+    ax.set_zlabel("SCORE")
+    plt.show()
+
 # PROCESS THE ARGUMENTS
 parser = argparse.ArgumentParser(description='Musician Multhreaded Testing')
 parser.add_argument('-b', '--before',
@@ -33,18 +60,18 @@ parser.add_argument('-a', '--after',
                         choices=range(0,101),
                         required=True,
                         type=int)
+
+parser.add_argument('-p', '--plot',
+                        help='Plot Type',
+                        choices={"scatter","surf"},
+                        default="scatter",
+                        type=str)
+
+
 args = parser.parse_args()
 
 a = wam_change(args.before,args.after)
-x,y,z = zip(*a)
-grid_x, grid_y = np.mgrid[min(x):max(x):100j,min(y):max(y):100j]
-grid_z = griddata((x,y),z,(grid_x,grid_y),method='cubic')
-
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-ax.plot_surface(grid_x,grid_y,grid_z,cmap=plt.cm.Spectral)
-ax.set_title("BEFORE: {} | AFTER: {}".format(args.before,args.after))
-ax.set_xlabel("NUM SUBS CHANGED / WEIGHTING")
-ax.set_ylabel("NUM SUBS COMPLETED")
-ax.set_zlabel("SCORE")
-plt.show()
+if args.plot == "surf":
+    plot_surf_res(a)
+else:
+    plot_scatter_res(a)
