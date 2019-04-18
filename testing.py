@@ -92,7 +92,7 @@ class Subjects(object):
         for s in self.subject_list: 
             subjects.append(s)
         shuffle(subjects) 
-        subjects = subjects[:10]
+        subjects = subjects[:5]
         
         all_indexes = set()
         # randomise the subjects per person 
