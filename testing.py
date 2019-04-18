@@ -224,3 +224,5 @@ if args.plot == "surf":
     plot_surf_res(a)
 else:
     plot_scatter_res(a)
+
+plt.show()
