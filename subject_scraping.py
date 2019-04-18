@@ -18,7 +18,7 @@ def wait_for_page(driver,elem_id,delay=3):
 
 # process the course table 
 def init_subject_dict():
-
+    subjects = {}
     fp = open("subjects.data","r+");
     lines = fp.readlines()
     if len(lines) == 0:
@@ -45,14 +45,14 @@ def init_subject_dict():
             data = s.text.split(' - ')
             sub = (data[0].split('/'))[0]
             print("sub: {}".format(sub),end="\r")
-            subjects[sub] = []
+            subjects[s] = {"changed": set(), "enrolled": set()}
             fp.write(sub+"\n")
     else:
         subs_arr = lines
         fp.close()
         for s in lines:
-            subjects[s] = []
+            subjects[s.strip()] = {"changed": set(), "enrolled": set()}
     return subjects
 
-subjects = init_subject_dict()
-print(len(subjects))
+#subjects = init_subject_dict()
+#print(len(subjects))
